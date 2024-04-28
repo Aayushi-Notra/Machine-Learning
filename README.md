@@ -3,14 +3,48 @@ This repo contains things I learn about machine learning
 
 ```mermaid 
   graph TD;
-  Machine learning algorithms can be broadly classified into:--> Unsupervised ML;
-  Machine learning algorithms can be broadly classified into:--> Supervised ML;
-  Machine learning algorithms can be broadly classified into:-->Reinforcements ML;
-  Unsupervised ML--> Unlabelled dataset is used to cluster and classfiy data-sets based on hidden patterns in the data;
-  Supervised ML--> Labelled datasets is used to train algorithms to predict outcomes;
-  Unlabelled dataset is used to cluster and classfiy data-sets based on hidden patterns in the data--> Clustering, Dimensionality Reduction, Associations;
-  Labelled datasets is used to train algorithms to predict outcomes--> Classification;
-  Classifictation --> Random Forest, Decision Tree, Support Vector Machine, Linear Classifier;
-  Labelled datasets is used to train algorithms to predict outcomes-->Regression;
-  Regression--> Linear Regression, Polynomial Regression, Logistic Regression;
+  Machine-learning-algorithms--> Unsupervised-ML;
+  Machine-learning-algorithms-->Reinforcements-ML;
+  Unsupervised-ML--> Unlabelled_dataset;
+  Unlabelled_dataset--> Clustering;
+  Clustering--> Hierarchical;
+  Clustering--> k-mean;
+  Unlabelled_dataset-->Dimensionality_Reduction;
+  Dimensionality_Reduction--> PCA;
+  
+  Unlabelled_dataset --> Associations;
+  Machine-learning-algorithms--> Supervised-ML;
+  Supervised-ML--> Labelled_datasets;
+
+  Labelled_datasets--> Classification;
+  Classification --> Random_Forest;
+  Classification-->Decision_Tree;
+  Classification-->Support_Vector_Machine;
+  Classification-->Linear_Classifier;
+
+  Labelled_datasets-->Regression;
+  Regression-->Linear_Regression;
+  Regression-->Polynomial_Regression;
+  Regression-->Logistic_Regression;
   ```
+**Unsupervised ML** algorithms uses unlabelled datasets to analyse and cluster the data by discovering its hidden patterns.
+
+**Supervised ML algorithms** uses labelled datsets to train the dataset for predicting outcomes 
+```mermaid
+graph TD;
+Supervised-ML --> Data;
+Supervised-ML--> Labels;
+Data-->Train_Model;
+Labels-->Train_Model;
+Train_Model-->Test_Data;
+Test_Data-->Predict_outcome;
+```
+Classification assigns data into groups such as cancerous vs non cancerous while Regression allows the identificaton if the relationship between dependent and independent  variables.
+
+
+
+
+
+
+
+
