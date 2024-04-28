@@ -1,0 +1,114 @@
+---
+title: "Linear_regression_model_ML_example"
+author: "Aayushi"
+date: '2024-04-28'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R-markdown for a sample linear regression model to predict 
+
+```{r packages}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+```
+#The csv contains the logcpm expression values of different genes belonging to different groups
+
+
+```{r data}
+#Loading in the COVID cases data 
+covid_data <- read.csv("C:/Users/notay003/Downloads/r_data/owid-covid-data.csv")
+View(covid_data)
+
+#subsetting the dataframe to columns of interest and removing rows with NA
+
+covid_data <- covid_data[,c(1,3,5,6,8,18,20,32,35,37,47,48,49)]
+covid_cases_na_removed <- na.omit(covid_data)
+
+```
+
+```{r}
+#Performing linear regression to test if the number of deaths are related to the hospital, icu admission and vacinated status of pateints 
+
+#since linear regression is a subcategory of Supervised ML algorithm we would need to split our data into training and test dataset
+
+#Usually the training to test ratio is 70:30 
+#Random division of the samples into training and test datasets 
+
+rows_covid <- nrow(covid_cases_na_removed)
+train <- sample(rows_covid, 0.7*rows_covid)
+test <- rows_covid %>% seq_len() %>% setdiff(train)
+```
+
+
+```{r, echo=T}
+#our dataset had 2882 rows
+cat("Total no of enteries:",rows_covid, "\nEnteries in train dataset:",length(train),"\nEnteries in test dataset:",length(test))
+```
+```{r}
+#subsetting the dataset into train and test
+traning_covid <- covid_cases_na_removed[train,]
+test_covid <- covid_cases_na_removed[test,]
+```
+
+
+```{r}
+#fitting a linear model
+#the method used is the default 'qr' method which works by finding the best-fitting linear approximation to the data by minimizing the sum of the squares of the differences between the observed and predicted values
+
+#here we are considering total_deaths as a dependent variable and 
+linear_model = lm(data=traning_covid, total_deaths~icu_patients+hosp_patients+positive_rate+total_vaccinations)
+```
+
+#having a look at how well the model fits the data
+
+```{r}
+summary(linear_model)
+```
+
+#the model appears to be good, as indicated by the high R-squared value (0.9551) and the statistically significant coefficients
+
+```{r}
+predicted_deaths = predict(linear_model,test_covid)
+
+#extracting the total deaths from the original dataframe and plotting it against the predicted deaths obtained from our model 
+
+
+results_covid = as.data.frame(predicted_deaths)
+results_covid$Deaths_from_data = test_covid$total_deaths
+results_covid$location <- test_covid$location
+View(results_covid)
+
+```
+
+```{r,echo=T}
+ggplot(results_covid,aes(x=predicted_deaths,y=Deaths_from_data,color=location))+geom_point()+
+  theme_bw()+labs(title = "Linear Model for Covid Deaths",x="Predictde_Death",y="Known_Deaths")+
+  theme(plot.title = element_text(size=10,face="bold"),
+        axis.title = element_text(size=10))
+```
+
+
+```{r,echo=T}
+
+#summerising the dataset by location for better plotting 
+checking_for_sum <- results_covid %>% group_by(location) %>%summarise(Known_deaths=sum(Deaths_from_data),Predicted_deaths=sum(predicted_deaths))
+
+
+ggplot(checking_for_sum,aes(x=Predicted_deaths,y=Known_deaths,color=location))+geom_point()+
+  theme_bw()+labs(title = "Linear Model for Covid Deaths",x="Predictde_Death",y="Known_Deaths")+
+  theme(plot.title = element_text(size=10,face="bold"),
+        axis.title = element_text(size=10))+geom_abline(slope = 1, intercept = 0)#+guides(color='none')+geom_text_repel(aes(label=location),max.overlaps = Inf)
+
+```
+
+#As we can see that most of the points lie along the diagnol this means that our model prediction is very close to the original deaths from the stats
+
+
+
